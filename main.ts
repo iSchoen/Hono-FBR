@@ -18,8 +18,6 @@ const getRoutePaths = async (
 ): Promise<RouteResult[]> => {
   const { path, filePattern, fnPattern } = routeConfig;
 
-  console.log({ path });
-
   const routes = Array.from(Deno.readDirSync(path));
 
   const parsedRoutes = await Promise.all(routes.map(async (r) => {
@@ -37,10 +35,11 @@ const getRoutePaths = async (
       (filePattern instanceof RegExp && filePattern.test(r.name)) ||
       r.name === filePattern
     ) {
-      console.log({ pathRightBeforeImport: path });
-      const fn = (await import(
-        isAbsolute(path) ? `file://${path}/${r.name}` : `${path}/${r.name}`
-      ))[fnPattern];
+      if (!isAbsolute(path)) {
+        throw new Error(`Path ${path} is not absolute`);
+      }
+
+      const fn = (await import(`file://${path}/${r.name}`))[fnPattern];
 
       return [{
         path,
@@ -56,8 +55,6 @@ export const getRoutes = async (
   routeConfig: RoutingConfig,
 ) => {
   const { path: rootPath } = routeConfig;
-
-  console.log({ rootPath, cwd: Deno.cwd() });
 
   const routes = await getRoutePaths(routeConfig);
 
