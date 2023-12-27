@@ -26,7 +26,7 @@ and means less time coding routing logic and more time making your app awesome.
 ## Getting Started
 
 Hono FBR is specifically built for use with Deno. As such, you can use the library by simply importing
-the library from `https://github.com/iSchoen/Hono-FBR`.
+the library from `https://raw.githubusercontent.com/iSchoen/Hono-FBR/master/mod.ts`.
 
 ## Usage
 
