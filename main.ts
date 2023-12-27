@@ -1,6 +1,6 @@
 import { compact } from "./utils/compact.ts";
 import { flattenList } from "./utils/flattenList.ts";
-import { Context, Handler, Hono } from "./deps.ts";
+import { Context, Handler, Hono, isAbsolute } from "./deps.ts";
 
 type RoutingConfig = {
   path: string;
@@ -35,7 +35,9 @@ const getRoutePaths = async (
       (filePattern instanceof RegExp && filePattern.test(r.name)) ||
       r.name === filePattern
     ) {
-      const fn = (await import(`${path}/${r.name}`))[fnPattern];
+      const fn = isAbsolute(path)
+        ? (await import(`${path}/${r.name}`))[fnPattern]
+        : (await import(`${Deno.cwd}/${path}/${r.name}`))[fnPattern];
 
       return [{
         path,
