@@ -37,7 +37,7 @@ const getRoutePaths = async (
     ) {
       const fn = isAbsolute(path)
         ? (await import(`${path}/${r.name}`))[fnPattern]
-        : (await import(`${Deno.cwd}/${path}/${r.name}`))[fnPattern];
+        : (await import(`${Deno.cwd()}/${path}/${r.name}`))[fnPattern];
 
       return [{
         path,
