@@ -91,6 +91,9 @@ Will produce the following routes
 "/products/:id"
 ```
 
+> Note that while the examples above use .tsx files, the file based routing is not
+> exclusive to jsx!
+
 ### Dynamic Routes
 
 In Hono, the part of the request URL prefixed with `:` is dynamic. This means that
