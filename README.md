@@ -73,7 +73,7 @@ And the following configuration
 
 ```typescript
 getRoutes({
-    path: "./routes",
+    path: Deno.cwd() + "/routes",
     filePattern: "page.tsx",
     fnPattern: "Page"
 })
