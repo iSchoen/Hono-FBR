@@ -40,8 +40,6 @@ app.route(
     "",
     await getRoutes({
         path: Deno.cwd() + "/routes",   // must be an absolute path
-        filePattern: "page.tsx",        // can be a string or regex expression
-        fnPattern: "Page"               // name of the fn that Hono FBR should look for
     })
 )
 
@@ -74,8 +72,6 @@ And the following configuration
 ```typescript
 getRoutes({
     path: Deno.cwd() + "/routes",
-    filePattern: "page.tsx",
-    fnPattern: "Page"
 })
 ```
 
@@ -117,8 +113,6 @@ app.route(
   "",
   await getRoutes({
     path: Deno.cwd() + "/routes",
-    filePattern: "page.tsx",
-    fnPattern: "Page",
   }),
 );
 ```
@@ -130,7 +124,5 @@ You can configure how your routes are generated.
 ```typescript
 {
     path: string,
-    filePattern: string | RegExp,
-    fnPattern: string
 }
 ```

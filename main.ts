@@ -6,12 +6,10 @@ import {
   Hono,
   isAbsolute,
   MiddlewareHandler,
-  validator,
 } from "./deps.ts";
 
 type RoutingConfig = {
   path: string;
-  filePattern?: string | RegExp;
 };
 
 type RouteResult = {
@@ -25,7 +23,7 @@ type RouteResult = {
 const getRoutePaths = async (
   routeConfig: RoutingConfig,
 ): Promise<RouteResult[]> => {
-  const { path, filePattern } = routeConfig;
+  const { path } = routeConfig;
 
   const routes = Array.from(Deno.readDirSync(path));
 
@@ -42,7 +40,6 @@ const getRoutePaths = async (
     if (r.isDirectory) {
       const nestedRoutes = getRoutePaths({
         path: `${path}/${r.name}`,
-        filePattern,
       });
 
       return nestedRoutes;
@@ -140,3 +137,14 @@ export const getRoutes = async (
 
   return app;
 };
+
+const app = new Hono();
+
+app.route(
+  "",
+  await getRoutes({
+    path: Deno.cwd() + "/routes",
+  }),
+);
+
+Deno.serve({ port: 3000 }, app.fetch);
