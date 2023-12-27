@@ -37,7 +37,8 @@ const getRoutePaths = async (
       (filePattern instanceof RegExp && filePattern.test(r.name)) ||
       r.name === filePattern
     ) {
-      const { default: fn } = (await import(
+      console.log({ pathRightBeforeImport: path });
+      const fn = (await import(
         isAbsolute(path) ? `file://${path}/${r.name}` : `${path}/${r.name}`
       ))[fnPattern];
 
