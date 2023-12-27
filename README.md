@@ -113,8 +113,8 @@ const app = new Hono();
 app.route(
   "",
   await getRoutes({
-    path: "./testingRoutes",
-    filePattern: /\page.tsx?$/,
+    path: Deno.cwd() + "/routes",
+    filePattern: "page.tsx",
     fnPattern: "Page",
   }),
 );
