@@ -56,7 +56,7 @@ export const getRoutes = async (
 ) => {
   const { path: rootPath } = routeConfig;
 
-  console.log({ rootPath });
+  console.log({ rootPath, cwd: Deno.cwd() });
 
   const routes = await getRoutePaths(routeConfig);
 
