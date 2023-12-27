@@ -18,6 +18,8 @@ const getRoutePaths = async (
 ): Promise<RouteResult[]> => {
   const { path, filePattern, fnPattern } = routeConfig;
 
+  console.log({ path });
+
   const routes = Array.from(Deno.readDirSync(path));
 
   const parsedRoutes = await Promise.all(routes.map(async (r) => {
@@ -53,6 +55,8 @@ export const getRoutes = async (
   routeConfig: RoutingConfig,
 ) => {
   const { path: rootPath } = routeConfig;
+
+  console.log({ rootPath });
 
   const routes = await getRoutePaths(routeConfig);
 
