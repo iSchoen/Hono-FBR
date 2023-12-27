@@ -39,9 +39,9 @@ const app = new Hono();
 app.route(
     "",
     await getRoutes({
-        path: "./path/to/routes",
-        filePattern: "page.tsx",    // can be a string or regex expression
-        fnPattern: "Page"           // name of the fn that Hono FBR should look for
+        path: Deno.cwd() + "/routes",   // must be an absolute path
+        filePattern: "page.tsx",        // can be a string or regex expression
+        fnPattern: "Page"               // name of the fn that Hono FBR should look for
     })
 )
 
