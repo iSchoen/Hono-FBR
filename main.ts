@@ -37,9 +37,9 @@ const getRoutePaths = async (
       (filePattern instanceof RegExp && filePattern.test(r.name)) ||
       r.name === filePattern
     ) {
-      const fn = isAbsolute(path)
-        ? (await import(`/${path}/${r.name}`))[fnPattern]
-        : (await import(`/${Deno.cwd()}/${path}/${r.name}`))[fnPattern];
+      const { default: fn } = (await import(
+        isAbsolute(path) ? `file://${path}/${r.name}` : `${path}/${r.name}`
+      ))[fnPattern];
 
       return [{
         path,
