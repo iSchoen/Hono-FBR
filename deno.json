@@ -2,6 +2,7 @@
   "name": "@inventus/hono-fbr",
   "version": "0.1.0",
   "exports": "./mod.ts",
+  "license": "MIT",
   "tasks": {
     "dev": "deno run --allow-read --allow-net --watch main.ts"
   },
