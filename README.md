@@ -37,10 +37,10 @@ import { getRoutes } from "https://github.com/iSchoen/Hono-FBR";
 const app = new Hono();
 
 app.route(
-    "/v1",
-    await getRoutes({
-        path: Deno.cwd() + "/v1",   // must be an absolute path
-    })
+  "/v1",
+  await getRoutes({
+    path: Deno.cwd() + "/v1",   // must be an absolute path
+  })
 )
 
 Deno.serve({ port: 3000 }, app.fetch);
@@ -76,7 +76,7 @@ And the following configuration
 
 ```typescript
 getRoutes({
-    path: Deno.cwd() + "/v1",
+  path: Deno.cwd() + "/v1",
 })
 ```
 
@@ -100,11 +100,11 @@ route to `/users`.
 
 ```typescript
 export const GET = createHandler(
-	(ctx) => {
-		return ctx.json({
-			message: "Hello, World!",
-		});
-	},
+  (ctx) => {
+    return ctx.json({
+      message: "Hello, World!",
+    });
+  },
 );
 ```
 
@@ -113,20 +113,20 @@ access, and more.
 
 ```typescript
 export const GET = createHandler(
-	validator("param", (value, c) => {
-		if (value.id === undefined) {
-			return c.json({
-				message: "Invalid param",
-			});
-		}
+  validator("param", (value, c) => {
+    if (value.id === undefined) {
+      return c.json({
+        message: "Invalid param",
+      });
+    }
 
-		return {
-			id: paramParse.data.id,
-		};
-	}),
-	(ctx) => {
-		return ctx.json({
-			message: "Hello, World!",
+    return {
+      id: paramParse.data.id,
+    };
+  }),
+  (ctx) => {
+    return ctx.json({
+      message: "Hello, World!",
     });
   },
 );
@@ -165,10 +165,10 @@ A function that creates a handler for a route.
 
 ```typescript
 export const GET = createHandler(
-	(ctx) => {
-		return ctx.json({
-			message: "Hello, World!",
-		});
-	},
+  (ctx) => {
+    return ctx.json({
+      message: "Hello, World!",
+    });
+  },
 );
 ```
