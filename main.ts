@@ -44,6 +44,25 @@ const getRoutePaths = async (
   return flattenList(compact(parsedRoutes));
 };
 
+/**
+ * Get routes from a routing configuration
+ *
+ * @param routeConfig The root path of the routes you want to create with file-based routing
+ *
+ * @returns The routes to pass into Hono
+ *
+ * @throws If the path is not absolute
+ *
+ * @example
+ * ```typescript
+ *  app.route(
+ *    "/v1",
+ *    await getRoutes({
+ *      path: Deno.cwd() + "/v1",   // must be an absolute path
+ *    })
+ *  )
+ * ```
+ */
 export const getRoutes = async (
   routeConfig: RoutingConfig,
 ): Promise<Hono<Env, Schema, "/">> => {
