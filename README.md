@@ -124,11 +124,11 @@ export const GET = createHandler(
 			id: paramParse.data.id,
 		};
 	}),
-    (ctx) => {
-        return ctx.json({
-            message: "Hello, World!",
-        });
-    },
+	(ctx) => {
+		return ctx.json({
+			message: "Hello, World!",
+    });
+  },
 );
 ```
 
