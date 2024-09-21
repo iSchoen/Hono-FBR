@@ -1,4 +1,4 @@
-import type { createHandler } from "./utils/createHandler.ts";
+import type { createHandler } from "./createHandler.ts";
 
 export type RoutingConfig = {
   path: string;
