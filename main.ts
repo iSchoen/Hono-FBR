@@ -1,24 +1,8 @@
 import { compact } from "./utils/compact.ts";
+import { Hono } from "hono";
+import { isAbsolute } from "@std/path";
+import type { RouteResult, RoutingConfig } from "./types.ts";
 import { flattenList } from "./utils/flattenList.ts";
-import {
-  Context,
-  Handler,
-  Hono,
-  isAbsolute,
-  MiddlewareHandler,
-} from "./deps.ts";
-
-type RoutingConfig = {
-  path: string;
-};
-
-type RouteResult = {
-  path: string;
-  GET?: { validators: MiddlewareHandler[]; handler: Handler };
-  PUT?: { validators: MiddlewareHandler[]; handler: Handler };
-  POST?: { validators: MiddlewareHandler[]; handler: Handler };
-  DELETE?: { validators: MiddlewareHandler[]; handler: Handler };
-};
 
 const getRoutePaths = async (
   routeConfig: RoutingConfig,
@@ -26,15 +10,6 @@ const getRoutePaths = async (
   const { path } = routeConfig;
 
   const routes = Array.from(Deno.readDirSync(path));
-
-  if (
-    routes.some((r) => r.name === "page.tsx" || r.name === "page.ts") &&
-    routes.some((r) => r.name === "route.ts" || r.name === "route.tsx")
-  ) {
-    throw new Error(
-      `Route ${path} has both page.ts(x) and route.ts(x) files. Please remove one.`,
-    );
-  }
 
   const parsedRoutes = await Promise.all(routes.map(async (r) => {
     if (r.isDirectory) {
@@ -45,63 +20,25 @@ const getRoutePaths = async (
       return nestedRoutes;
     }
 
-    const file = await import(`file://${path}/${r.name}`);
+    const route: RouteResult = {
+      path,
+    };
 
-    if (r.name === "page.ts" || r.name === "page.tsx") {
-      const PAGE = file["default"];
-      const PAGE_VALIDATORS = file["PAGE_VALIDATORS"] ?? [];
+    await Promise.all([
+      import(`file://${path}/get.ts`).then((file) => route.GET = file["GET"])
+        .catch(() => {}),
 
-      console.log({ PAGE });
+      import(`file://${path}/put.ts`).then((file) => route.PUT = file["PUT"])
+        .catch(() => {}),
 
-      return [{
-        path,
-        GET: PAGE
-          ? {
-            validators: PAGE_VALIDATORS,
-            handler: (ctx: Context) => PAGE(ctx),
-          }
-          : undefined,
-      }];
-    }
+      import(`file://${path}/post.ts`).then((file) => route.POST = file["POST"])
+        .catch(() => {}),
 
-    if (r.name === "route.ts" || r.name === "route.tsx") {
-      const GET = file["GET"];
-      const GET_VALIDATORS = file["GET_VALIDATORS"] ?? [];
-      const PUT = file["PUT"];
-      const PUT_VALIDATORS = file["PUT_VALIDATORS"] ?? [];
-      const POST = file["POST"];
-      const POST_VALIDATORS = file["POST_VALIDATORS"] ?? [];
-      const DELETE = file["DELETE"];
-      const DELETE_VALIDATORS = file["DELETE_VALIDATORS"] ?? [];
+      import(`file://${path}/del.ts`).then((file) => route.DEL = file["DEL"])
+        .catch(() => {}),
+    ]);
 
-      return [{
-        path,
-        GET: GET
-          ? {
-            validators: GET_VALIDATORS,
-            handler: (ctx: Context) => GET(ctx),
-          }
-          : undefined,
-        PUT: PUT
-          ? {
-            validators: PUT_VALIDATORS,
-            handler: (ctx: Context) => PUT(ctx),
-          }
-          : undefined,
-        POST: POST
-          ? {
-            validators: POST_VALIDATORS,
-            handler: (ctx: Context) => POST(ctx),
-          }
-          : undefined,
-        DELETE: DELETE
-          ? {
-            validators: DELETE_VALIDATORS,
-            handler: (ctx: Context) => DELETE(ctx),
-          }
-          : undefined,
-      }];
-    }
+    return [route];
   }));
 
   return flattenList(compact(parsedRoutes));
@@ -127,24 +64,13 @@ export const getRoutes = async (
   const app = new Hono();
 
   for (const finalRoute of finalRoutes) {
-    const { path, GET, PUT, POST, DELETE } = finalRoute;
+    const { path, GET, PUT, POST, DEL } = finalRoute;
 
-    GET && app.get(path, ...GET.validators, GET.handler);
-    PUT && app.put(path, ...PUT.validators, PUT.handler);
-    POST && app.post(path, ...POST.validators, POST.handler);
-    DELETE && app.delete(path, ...DELETE.validators, DELETE.handler);
+    GET && app.get(path, ...GET);
+    PUT && app.put(path, ...PUT);
+    POST && app.post(path, ...POST);
+    DEL && app.delete(path, ...DEL);
   }
 
   return app;
 };
-
-const app = new Hono();
-
-app.route(
-  "",
-  await getRoutes({
-    path: Deno.cwd() + "/routes",
-  }),
-);
-
-Deno.serve({ port: 3000 }, app.fetch);
