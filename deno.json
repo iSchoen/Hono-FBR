@@ -1,5 +1,12 @@
 {
+  "name": "@inventus/hono-fbr",
+  "version": "0.1.0",
+  "exports": "./mod.ts",
   "tasks": {
     "dev": "deno run --allow-read --allow-net --watch main.ts"
+  },
+  "imports": {
+    "@std/path": "jsr:@std/path@^1.0.6",
+    "hono": "npm:hono@^4.6.2"
   }
 }
