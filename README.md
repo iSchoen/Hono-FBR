@@ -154,7 +154,7 @@ const app = new Hono();
 app.route(
   "",
   await getRoutes({
-    path: Deno.cwd() + "/routes",
+    path: Deno.cwd() + "/v1",
   }),
 );
 ```
