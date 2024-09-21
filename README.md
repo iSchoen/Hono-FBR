@@ -83,10 +83,10 @@ getRoutes({
 Will produce the following routes
 
 ```
-"/users"        (GET, PUT, POST),
-"/users/:id"    (GET, PUT, POST, DELETE),
-"/products"     (GET, PUT, POST),
-"/products/:id" (GET, PUT, POST, DELETE)
+"/v1/users"        (GET, PUT, POST),
+"/v1/users/:id"    (GET, PUT, POST, DELETE),
+"/v1/products"     (GET, PUT, POST),
+"/v1/products/:id" (GET, PUT, POST, DELETE)
 ```
 
 ### Route Files
