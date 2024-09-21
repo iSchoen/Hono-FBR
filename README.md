@@ -26,7 +26,7 @@ and means less time coding routing logic and more time making your app awesome.
 ## Getting Started
 
 Hono FBR is specifically built for use with Deno. As such, you can use the library by simply importing
-the library from `https://raw.githubusercontent.com/iSchoen/Hono-FBR/master/mod.ts`.
+the library from `jsr:@inventus/hono-fbr`.
 
 ## Usage
 
@@ -37,9 +37,9 @@ import { getRoutes } from "https://github.com/iSchoen/Hono-FBR";
 const app = new Hono();
 
 app.route(
-    "",
+    "/v1",
     await getRoutes({
-        path: Deno.cwd() + "/routes",   // must be an absolute path
+        path: Deno.cwd() + "/v1",   // must be an absolute path
     })
 )
 
@@ -52,43 +52,85 @@ The following folder structure
 
 ```
 routes
-├── page.tsx
 ├── users
-│   ├── page.tsx
+│   ├── get.ts
+│   ├── put.ts
+│   ├── post.ts
 │   └── :id
-│       └── page.tsx
-├── products
-│   ├── page.tsx
-│   └── :id
-│       └── page.tsx
-├── contact
-│   └── page.tsx
-└── about
-    └── page.tsx
+│       ├── get.ts
+│       ├── put.ts
+│       ├── post.ts
+│       └── del.ts
+└── products
+    ├── get.ts
+    ├── put.ts
+    ├── post.ts
+    └── :id
+        ├── get.ts
+        ├── put.ts
+        ├── post.ts
+        └── del.ts
 ```
 
 And the following configuration
 
 ```typescript
 getRoutes({
-    path: Deno.cwd() + "/routes",
+    path: Deno.cwd() + "/v1",
 })
 ```
 
 Will produce the following routes
 
 ```
-"/",
-"/contact",
-"/about",
-"/users",
-"/users/:id",
-"/products",
-"/products/:id"
+"/users"        (GET, PUT, POST),
+"/users/:id"    (GET, PUT, POST, DELETE),
+"/products"     (GET, PUT, POST),
+"/products/:id" (GET, PUT, POST, DELETE)
 ```
 
-> Note that while the examples above use .tsx files, the file based routing is not
-> exclusive to jsx!
+### Route Files
+
+Hono FBR uses the file system to define routes. Each file in the routes directory
+represents a route. The name of the file is the HTTP method that the route will
+respond to. The contents of the file is the route function.
+
+For example, the file `get.ts` in the `users` directory would represent a `GET`
+route to `/users`.
+
+```typescript
+export const GET = createHandler(
+	(ctx) => {
+		return ctx.json({
+			message: "Hello, World!",
+		});
+	},
+);
+```
+
+All features of Hono are available in route files, including middleware, context
+access, and more.
+
+```typescript
+export const GET = createHandler(
+	validator("param", (value, c) => {
+		if (value.id === undefined) {
+			return c.json({
+				message: "Invalid param",
+			});
+		}
+
+		return {
+			id: paramParse.data.id,
+		};
+	}),
+    (ctx) => {
+        return ctx.json({
+            message: "Hello, World!",
+        });
+    },
+);
+```
 
 ### Dynamic Routes
 
@@ -117,12 +159,16 @@ app.route(
 );
 ```
 
-`RoutingConfig`
+`Fn createHandler`
 
-You can configure how your routes are generated.
+A function that creates a handler for a route.
 
 ```typescript
-{
-    path: string,
-}
+export const GET = createHandler(
+	(ctx) => {
+		return ctx.json({
+			message: "Hello, World!",
+		});
+	},
+);
 ```
