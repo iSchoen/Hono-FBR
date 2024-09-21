@@ -1,8 +1,8 @@
-import { compact } from "./utils/compact.ts";
-import { Hono } from "hono";
+import { compact } from "./lib/compact.ts";
+import { Env, Hono, Schema } from "hono";
 import { isAbsolute } from "@std/path";
-import type { RouteResult, RoutingConfig } from "./types.ts";
-import { flattenList } from "./utils/flattenList.ts";
+import type { RouteResult, RoutingConfig } from "./lib/types.ts";
+import { flattenList } from "./lib/flattenList.ts";
 
 const getRoutePaths = async (
   routeConfig: RoutingConfig,
@@ -46,7 +46,7 @@ const getRoutePaths = async (
 
 export const getRoutes = async (
   routeConfig: RoutingConfig,
-) => {
+): Promise<Hono<Env, Schema, "/">> => {
   const { path: rootPath } = routeConfig;
 
   if (!isAbsolute(rootPath)) {
