@@ -51,7 +51,7 @@ Deno.serve({ port: 3000 }, app.fetch);
 The following folder structure
 
 ```
-routes
+v1
 ├── users
 │   ├── get.ts
 │   ├── put.ts
