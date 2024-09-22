@@ -1,5 +1,5 @@
 import { compact } from "./lib/compact.ts";
-import { Env, Hono, Schema } from "hono";
+import { type Env, Hono, type Schema } from "hono";
 import { isAbsolute } from "@std/path";
 import type { RouteResult, RoutingConfig } from "./lib/types.ts";
 import { flattenList } from "./lib/flattenList.ts";
